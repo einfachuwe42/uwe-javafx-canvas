@@ -66,11 +66,17 @@ public class VerletRenderer implements Renderer {
     public void render(GraphicsContext gc, double width, double height, double mouseX, double mouseY, long now) {
 
         if(!pause){
+            for (Point point : points) {
+                point.update(width, height);
+            }
             for (Stick stick : sticks) {
                 stick.update(width, height);
             }
-            for (Point point : points) {
-                point.update(width, height);
+            for (Stick stick : sticks) {
+                stick.update(width, height);
+            }
+            for (Stick stick : sticks) {
+                stick.update(width, height);
             }
         }
 
@@ -181,10 +187,32 @@ public class VerletRenderer implements Renderer {
                     case W -> load();
                     case C -> clear();
                     case G -> switchGravity();
+                    case X -> addPointWithConstrainFixLength(mouseX, mouseY);
 
                 }
             }
         }
+    }
+
+    private void addPointWithConstrainFixLength(double mouseX, double mouseY) {
+
+
+        final double LENGTH = 20;
+
+        if(!points.isEmpty()){
+            final Point lastPoint = points.get(points.size()-1);
+            double dx = mouseX - lastPoint.x;
+            double dy = mouseY - lastPoint.y;
+            double angle = Math.atan2(dy, dx);
+            double x = lastPoint.x + LENGTH * Math.cos(angle);
+            double y = lastPoint.y + LENGTH * Math.sin(angle);
+            final Point newPoint = Point.create(x, y, x, y);
+            final Stick newStick = new Stick(lastPoint, newPoint);
+            sticks.add(newStick);
+            points.add(newPoint);
+        }
+
+
     }
 
     private void addPointWithConstrain(double mouseX, double mouseY) {

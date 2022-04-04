@@ -13,7 +13,7 @@ public class Point {
     public double x, y;
     public double x1, y1;
     public double bounce = 1;
-    public double gravity = 0.2;
+    public double gravity = 0.05;
     public boolean pinned = false;
     public transient Color color = Color.ORANGERED;
 
@@ -65,6 +65,7 @@ public class Point {
                 y = 0;
                 y1 = y + vy * bounce;
             }
+
             if(x > width){
                 x = width;
                 x1 = x + vx * bounce;

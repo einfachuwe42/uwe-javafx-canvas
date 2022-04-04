@@ -1,10 +1,12 @@
 package de.uwe;
 
 import de.uwe.renderer.BestRenderer;
+import de.uwe.renderer.VerletRenderer;
 import javafx.animation.AnimationTimer;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.InputEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -53,8 +55,8 @@ public class MainView {
         stage.centerOnScreen();
         stage.show();
 
-        renderer = new BestRenderer();
-       // canvas.addEventHandler(InputEvent.ANY, renderer.getEventHandler());
+        renderer = new VerletRenderer();
+        canvas.addEventHandler(InputEvent.ANY, renderer.getEventHandler());
         canvas.requestFocus();
 
         final AnimationTimer timer = new AnimationTimer() {
