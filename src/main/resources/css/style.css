@@ -1,0 +1,18 @@
+/* uwe colors */
+* {
+   -fx-base1: rgb(29, 29, 29);
+   -fx-base2: rgb(44, 77, 88);
+   -fx-color-red: rgb(252, 122, 122);
+   -fx-color-yellow: rgb(252, 228, 122);
+   -fx-color-green: rgb(122, 252, 133);
+   -fx-color-blue: rgb(124, 122, 255);
+   -fx-color-gray: rgb(160, 160, 160);
+   -fx-color-gray-dark: rgb(60, 60, 60);
+   -fx-color-red-dark: rgb(80, 50, 50);
+}
+
+
+
+
+
+
