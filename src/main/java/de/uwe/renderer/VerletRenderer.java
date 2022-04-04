@@ -197,7 +197,7 @@ public class VerletRenderer implements Renderer {
     private void addPointWithConstrainFixLength(double mouseX, double mouseY) {
 
 
-        final double LENGTH = 20;
+        final double LENGTH = 50;
 
         if(!points.isEmpty()){
             final Point lastPoint = points.get(points.size()-1);
@@ -276,6 +276,7 @@ public class VerletRenderer implements Renderer {
             final List<Stick> sticksToRemove = sticks.stream().filter(s -> s.p1.equals(selectedPoint) || s.p2.equals(selectedPoint)).toList();
             points.remove(selectedPoint);
             sticks.removeAll(sticksToRemove);
+            selectedPoints.clear();
         }
 
     }

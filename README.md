@@ -21,3 +21,19 @@ Im Projektordner `gradlew quarkusBuild` ausführen.
 
 `java -jar $PROJECT_DIR/build/quarkus-app/quarkus-run.jar`
 
+
+```
+case R -> restart();
+case P -> pause();
+case A -> points.add(Point.create(mouseX, mouseY, mouseX, mouseY));
+case Y -> addPointWithConstrain(mouseX, mouseY);
+case S -> selectPoint(mouseX, mouseY);
+case D -> createConstrain();
+case Q -> save();
+case W -> load();
+case C -> clear();
+case G -> switchGravity();
+case X -> addPointWithConstrainFixLength(mouseX, mouseY);
+```
+
+
