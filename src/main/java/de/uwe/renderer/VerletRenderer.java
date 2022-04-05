@@ -20,6 +20,7 @@ public class VerletRenderer implements Renderer {
     private final List<Point> selectedPoints = new ArrayList<>();
 
     private boolean pause = false;
+    private boolean info = false;
 
     public VerletRenderer(){
     }
@@ -64,6 +65,16 @@ public class VerletRenderer implements Renderer {
 
     @Override
     public void render(GraphicsContext gc, double width, double height, double mouseX, double mouseY, long now) {
+
+
+        if(info) {
+
+            gc.setFill(Color.YELLOW);
+            gc.fillText("points: " + points.size(), 50, 50);
+            gc.fillText("sticks: " + sticks.size(), 50, 75);
+            gc.fillText("lastId: " + Point.lastId, 50, 100);
+
+        }
 
         if(!pause){
             for (Point point : points) {
@@ -112,6 +123,11 @@ public class VerletRenderer implements Renderer {
             nearestPoint.color = Color.LIGHTBLUE;
         return nearestPoint;
     }
+
+    private List<Stick> getConnectedSticks(Point point) {
+        return sticks.stream().filter(s -> s.p1.equals(point) || s.p2.equals(point)).toList();
+    }
+
 
     @Override
     public EventHandler<InputEvent> getEventHandler() {
@@ -181,21 +197,54 @@ public class VerletRenderer implements Renderer {
                     case P -> pause();
                     case A -> points.add(Point.create(mouseX, mouseY, mouseX, mouseY));
                     case Y -> addPointWithConstrain(mouseX, mouseY);
-                    case S -> selectPoint(mouseX, mouseY);
+                    case X -> addPointWithConstrainFixLength(mouseX, mouseY);
                     case D -> createConstrain();
+                    case S -> selectPoint(mouseX, mouseY);
+                    case E -> clearSelectedPoints();
                     case Q -> save();
                     case W -> load();
                     case C -> clear();
                     case G -> switchGravity();
-                    case X -> addPointWithConstrainFixLength(mouseX, mouseY);
+                    case I -> info = !info;
+                    case F -> removePoint();
+
 
                 }
             }
         }
     }
 
-    private void addPointWithConstrainFixLength(double mouseX, double mouseY) {
+    private void clearSelectedPoints() {
+        selectedPoints.clear();
+    }
 
+    private void removePoint() {
+
+        if(!points.isEmpty() && selectedPoints.size() == 1){
+            final Point selectedPoint = selectedPoints.get(0);
+            final List<Stick> connectedSticks = getConnectedSticks(selectedPoint);
+
+            if(connectedSticks.size() == 2){
+
+                Stick stick1 = connectedSticks.get(0);
+                Stick stick2 = connectedSticks.get(1);
+
+                Point p1 = stick1.p1.equals(selectedPoint) ? stick1.p2 : stick1.p1;
+                Point p2 = stick2.p1.equals(selectedPoint) ? stick2.p2 : stick2.p1;
+
+                Stick newStick = new Stick(p1, p2);
+
+                sticks.removeAll(connectedSticks);
+                points.remove(selectedPoint);
+                sticks.add(newStick);
+                selectedPoints.clear();
+
+            }
+        }
+    }
+
+
+    private void addPointWithConstrainFixLength(double mouseX, double mouseY) {
 
         final double LENGTH = 20;
 
@@ -307,8 +356,12 @@ public class VerletRenderer implements Renderer {
     private void load() {
         clear();
         final VerletData data = PersistUtils.loadJsonObject(VerletData.class);
+
         for (Point point : data.points) {
             points.add(new Point(point));
+            if(point.id > Point.lastId){
+                Point.lastId = point.id;
+            }
         }
 
         final List<String> stickLines = PersistUtils.readSticksFromFile("verletData.txt");

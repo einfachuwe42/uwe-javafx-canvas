@@ -7,7 +7,7 @@ import java.util.Objects;
 
 public class Point {
 
-    public static int lastId = 100;
+    public static int lastId = 0;
 
     public int id;
     public double x, y;
@@ -42,7 +42,7 @@ public class Point {
 
     public static Point create(double x, double y, double x1, double y1){
         final Point point = new Point(x, y, x1, y1);
-        point.id = lastId++;
+        point.id = ++lastId;
         return point;
     }
 
