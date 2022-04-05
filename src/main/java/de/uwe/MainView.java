@@ -14,6 +14,7 @@ import javafx.stage.Stage;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
+import javax.inject.Inject;
 import java.util.Objects;
 
 @ApplicationScoped
@@ -26,9 +27,11 @@ public class MainView {
 	public static double HEIGHT = 400;
 
     private final Canvas canvas = new Canvas();
-    private Renderer renderer = null;
     private double mouseX = 0;
     private double mouseY = 0;
+
+    @Inject
+    public VerletRenderer renderer;
 
 
     public void start(@Observes Stage stage) {
@@ -50,12 +53,11 @@ public class MainView {
         scene.getStylesheets().addAll(darkStyle, styleCss);
 
         stage.setScene(scene);
-        stage.setTitle("Uwe-javafx-canvas");
+        stage.setTitle("uwe-javafx-canvas");
         stage.sizeToScene();
         stage.centerOnScreen();
         stage.show();
 
-        renderer = new VerletRenderer();
         canvas.addEventHandler(InputEvent.ANY, renderer.getEventHandler());
         canvas.requestFocus();
 

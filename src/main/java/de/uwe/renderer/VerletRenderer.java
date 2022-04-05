@@ -2,6 +2,7 @@ package de.uwe.renderer;
 
 import de.uwe.PersistUtils;
 import de.uwe.Renderer;
+import de.uwe.SettingsStage;
 import de.uwe.verlet.Point;
 import de.uwe.verlet.Stick;
 import de.uwe.verlet.VerletData;
@@ -10,9 +11,14 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.*;
 import javafx.scene.paint.Color;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.DoubleFunction;
+import java.util.function.IntFunction;
 
+@ApplicationScoped
 public class VerletRenderer implements Renderer {
 
     private final List<Point> points = new ArrayList<>();
@@ -22,17 +28,12 @@ public class VerletRenderer implements Renderer {
     private boolean pause = false;
     private boolean info = false;
 
-    public VerletRenderer(){
-    }
-
-    public void pause(){
-        pause = !pause;
-    }
+    @Inject
+    public SettingsStage settingsStage;
 
     public void restart(){
 
-        points.clear();
-        sticks.clear();
+        clear();
 
         Point p00 = Point.create(300, 20, 300, 20);
         Point p02 = Point.create(300, 50, 300, 50);
@@ -63,6 +64,8 @@ public class VerletRenderer implements Renderer {
 
     }
 
+    private final List<Double[]> values = new ArrayList<>();
+
     @Override
     public void render(GraphicsContext gc, double width, double height, double mouseX, double mouseY, long now) {
 
@@ -91,15 +94,28 @@ public class VerletRenderer implements Renderer {
             }
         }
 
+        //polyline
+        gc.setStroke(Color.DEEPPINK);
+        final int size = values.size();
+        final double[] pointX = values.stream().mapToDouble(v -> v[0]).toArray();
+        final double[] pointY = values.stream().mapToDouble(v -> v[1]).toArray();
+        gc.strokePolyline(pointX, pointY, size);
+
+        //sticks
         gc.setStroke(Color.YELLOWGREEN);
         for (Stick stick : sticks) {
             stick.render(gc);
         }
 
+        //points
         gc.setFill(Color.ORANGERED);
         for (Point point : points) {
             point.render(gc, selectedPoints.contains(point));
+            if(point.marked){
+                values.add(new Double[] { point.x, point.y });
+            }
         }
+
 
     }
 
@@ -194,7 +210,7 @@ public class VerletRenderer implements Renderer {
                 final KeyEvent e = (KeyEvent) event;
                 switch (e.getCode()) {
                     case R -> restart();
-                    case P -> pause();
+                    case P -> pause = !pause;
                     case A -> points.add(Point.create(mouseX, mouseY, mouseX, mouseY));
                     case Y -> addPointWithConstrain(mouseX, mouseY);
                     case X -> addPointWithConstrainFixLength(mouseX, mouseY);
@@ -207,11 +223,30 @@ public class VerletRenderer implements Renderer {
                     case G -> switchGravity();
                     case I -> info = !info;
                     case F -> removePoint();
+                    case V -> settingsStage.show();
+                    case M -> markPoint();
+                    case L -> values.clear();
 
 
                 }
             }
         }
+    }
+
+    private void markPoint() {
+
+        if(selectedPoints.size() == 1) {
+            final Point selectedPoint = selectedPoints.get(0);
+            for (Point point : points) {
+                if(point.equals(selectedPoint)){
+                    point.marked = !point.marked;
+                }else{
+                    point.marked = false;
+                }
+            }
+            selectedPoints.clear();
+        }
+
     }
 
     private void clearSelectedPoints() {
@@ -287,6 +322,7 @@ public class VerletRenderer implements Renderer {
     private void clear() {
         points.clear();
         sticks.clear();
+        values.clear();
     }
 
     public void selectPoint(double mouseX, double mouseY){

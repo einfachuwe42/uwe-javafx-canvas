@@ -15,6 +15,7 @@ public class Point {
     public double bounce = 1;
     public double gravity = 0.05;
     public boolean pinned = false;
+    public boolean marked = false;
     public transient Color color = Color.ORANGERED;
 
     public Point(){
