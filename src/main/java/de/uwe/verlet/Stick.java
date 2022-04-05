@@ -7,11 +7,7 @@ import java.util.Objects;
 public class Stick {
 
     public Point p1, p2;
-    public double length;
-
-    public Stick(){
-
-    }
+    public final double length;
 
     public Stick(Point p1, Point p2){
         this.p1 = p1;
@@ -23,12 +19,29 @@ public class Stick {
 
     public void update(double width, double height) {
 
+        if(p1.pinned && p2.pinned)
+            return;
+
         double dx = p2.x - p1.x;
         double dy = p2.y - p1.y;
         double distance = Math.sqrt(dx*dx+dy*dy);
 
+        if(distance < 1){
+            distance = 1;
+        }
+        if(distance > length*1.1){
+            distance = length*1.1;
+        }
+
         double diff = length - distance;
-        double percent = (diff / length)/2;
+
+        double percent = 0;
+
+        if(p1.pinned || p2.pinned){
+            percent = (diff / length);
+        }else{
+            percent = (diff / length)/2;
+        }
 
         double offsetX = dx * percent;
         double offsetY = dy * percent;
@@ -37,6 +50,7 @@ public class Stick {
             p1.x -= offsetX;
             p1.y -= offsetY;
         }
+
         if(!p2.pinned) {
             p2.x += offsetX;
             p2.y += offsetY;

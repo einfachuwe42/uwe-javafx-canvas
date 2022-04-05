@@ -197,7 +197,7 @@ public class VerletRenderer implements Renderer {
     private void addPointWithConstrainFixLength(double mouseX, double mouseY) {
 
 
-        final double LENGTH = 50;
+        final double LENGTH = 20;
 
         if(!points.isEmpty()){
             final Point lastPoint = points.get(points.size()-1);
