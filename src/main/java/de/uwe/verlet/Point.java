@@ -39,6 +39,7 @@ public class Point {
         gravity = point.gravity;
         pinned = point.pinned;
         color = point.color;
+        marked = point.marked;
     }
 
     public static Point create(double x, double y, double x1, double y1){

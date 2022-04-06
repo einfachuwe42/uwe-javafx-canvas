@@ -1,5 +1,6 @@
 package de.uwe.verlet;
 
+import de.uwe.renderer.VerletRenderer;
 import javafx.scene.canvas.GraphicsContext;
 
 import java.util.Objects;
@@ -8,6 +9,7 @@ public class Stick {
 
     public Point p1, p2;
     public final double length;
+    public double currentLength;
 
     public Stick(Point p1, Point p2){
         this.p1 = p1;
@@ -25,6 +27,8 @@ public class Stick {
         double dx = p2.x - p1.x;
         double dy = p2.y - p1.y;
         double distance = Math.sqrt(dx*dx+dy*dy);
+
+        currentLength = distance;
 
         if(distance < 1){
             distance = 1;
@@ -59,6 +63,11 @@ public class Stick {
 
     public void render(GraphicsContext gc) {
         gc.strokeLine(p1.x, p1.y, p2.x, p2.y);
+        if(VerletRenderer.info) {
+            double dx = p2.x - p1.x;
+            double dy = p2.y - p1.y;
+            gc.fillText("" + currentLength, p1.x + dx / 2, p1.y + dy / 2 + 15);
+        }
     }
 
     @Override

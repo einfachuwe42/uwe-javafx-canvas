@@ -26,7 +26,7 @@ public class VerletRenderer implements Renderer {
     private final List<Point> selectedPoints = new ArrayList<>();
 
     private boolean pause = false;
-    private boolean info = false;
+    public static boolean info = false;
 
     @Inject
     public SettingsStage settingsStage;
@@ -103,6 +103,7 @@ public class VerletRenderer implements Renderer {
 
         //sticks
         gc.setStroke(Color.YELLOWGREEN);
+        gc.setFill(Color.YELLOWGREEN);
         for (Stick stick : sticks) {
             stick.render(gc);
         }
